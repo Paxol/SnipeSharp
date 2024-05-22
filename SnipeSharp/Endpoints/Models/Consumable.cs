@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using SnipeSharp.Attributes;
 using SnipeSharp.Common;
 
 namespace SnipeSharp.Endpoints.Models
@@ -7,51 +6,51 @@ namespace SnipeSharp.Endpoints.Models
     public class Consumable : CommonEndpointModel
     {
         [JsonProperty("category")]
-        [RequiredRequestHeader("category_id")]
+        [RequestHeader("category_id", true)]
         public Category Category { get; set; }
 
         [JsonProperty("company")]
-        [OptionalRequestHeader("company_id")]
+        [RequestHeader("company_id")]
         public Company Company { get; set; }
 
         [JsonProperty("item_no")]
-        [OptionalRequestHeader("item_no")]
+        [RequestHeader("item_no")]
         public string ItemNo { get; set; }
 
         [JsonProperty("location")]
-        [OptionalRequestHeader("location_id")]
+        [RequestHeader("location_id")]
         public Location Location { get; set; }
 
         [JsonProperty("manufacturer")]
-        [OptionalRequestHeader("manufacturer_id")]
+        [RequestHeader("manufacturer_id")]
         public Manufacturer Manufacturer { get; set; }
 
         [JsonProperty("min_amt")]
-        [OptionalRequestHeader("min_amt")]
+        [RequestHeader("min_amt")]
         public long? MinAmt { get; set; }
 
         [JsonProperty("model_number")]
-        [OptionalRequestHeader("model_number")]
+        [RequestHeader("model_number")]
         public string ModelNumber { get; set; }
 
         [JsonProperty("remaining")]
-        [OptionalRequestHeader("remaining")]
+        [RequestHeader("remaining")]
         public long? Remaining { get; set; }
 
         [JsonProperty("order_number")]
-        [OptionalRequestHeader("order_number")]
+        [RequestHeader("order_number")]
         public string OrderNumber { get; set; }
 
         [JsonProperty("purchase_cost")]
-        [OptionalRequestHeader("purchase_cost")]
+        [RequestHeader("purchase_cost")]
         public string PurchaseCost { get; set; }
 
         [JsonProperty("purchase_date")]
-        [OptionalRequestHeader("purchase_date")]
+        [RequestHeader("purchase_date")]
         public ResponseDate PurchaseDate { get; set; }
 
         [JsonProperty("qty")]
-        [RequiredRequestHeader("qty")]
+        [RequestHeader("qty", true)]
         public long? Quantity { get; set; }
 
         [JsonProperty("user_can_checkout")]

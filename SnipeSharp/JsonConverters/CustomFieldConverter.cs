@@ -2,11 +2,12 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using SnipeSharp.Common;
 
 namespace SnipeSharp.JsonConverters
 {
-    class CustomFieldConverter : JsonConverter
+    internal class CustomFieldConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {
@@ -16,20 +17,10 @@ namespace SnipeSharp.JsonConverters
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             // TODO: There's probably a hell of a lot that can go wrong here
-            JToken token = JToken.Load(reader);
+            var token = JToken.Load(reader);
 
-            Dictionary<string, string> result = new Dictionary<string, string>();
-
-            foreach (JToken subToken in token)
-            {
-                IEnumerable<JToken> children = subToken.Children();
-                foreach (JToken child in children)
-                {
-                    result.Add(child.Value<string>("field"), child.Value<string>("value"));
-                }
-            }
-            
-            return result;
+            return token.Select(subToken => subToken.Children()).SelectMany(children => children)
+                .ToDictionary(child => child.Value<string>("field"), child => child.Value<string>("value"));
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)

@@ -12,6 +12,6 @@ namespace SnipeSharp.Common
 
         [JsonProperty("rows")]
         //[JsonConverter(typeof(DetectJsonObjectType))]
-        public List<T> Rows { get; set; }
+        public List<T> Rows { get; } = new List<T>();
     }
 }

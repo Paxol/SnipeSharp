@@ -4,7 +4,8 @@ namespace SnipeSharp.Common
 {
     public interface IResponseCollection<T>
     {
-        long Total { get; set; }
-        List<T> Rows { get; set; }
+        long Total { get; }
+        
+        List<T> Rows { get; }
     }
 }

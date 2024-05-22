@@ -1,6 +1,5 @@
 ﻿using SnipeSharp.Common;
 using Newtonsoft.Json;
-using SnipeSharp.Attributes;
 
 namespace SnipeSharp.Endpoints.Models
 {
@@ -10,7 +9,7 @@ namespace SnipeSharp.Endpoints.Models
         private string _months;
 
         [JsonProperty("months")]
-        [RequiredRequestHeader("months")]
+        [RequestHeader("months", true)]
         public string Months
         {
             get

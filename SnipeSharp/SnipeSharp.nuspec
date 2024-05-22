@@ -1,18 +1,20 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>$id$</id>
+    <id>$id$-cn</id>
     <version>$version$</version>
-    <title>$title$</title>
-    <authors>Matthew Carey</authors>
-    <owners>Matthew Carey</owners>
+    <title>$title$-cn</title>
+    <authors>Matthew Carey, Christian Nitschkowski</authors>
+    <owners>Christian Nitschkowski</owners>
     <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
-    <projectUrl>https://github.com/barrycarey/SnipeSharp</projectUrl>
+    <projectUrl>https://github.com/cnitschkowski/SnipeSharp</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>$description$</description>
     <summary>A .Net API wrapper for Snipe IT that allows you to manage the full Snipe IT API within a .NET project. </summary>
     <releaseNotes>Added support for FieldSet endpoint</releaseNotes>
     <copyright>Copyright 2017</copyright>
+    <releaseNotes>Initial Release</releaseNotes>
+    <copyright>Copyright 2018, Christian Nitschkowski &amp; Matthew Carey</copyright>
     <tags>SnipeIT Snipe IT</tags>
   </metadata>
   <files>

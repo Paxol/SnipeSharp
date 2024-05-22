@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
-using SnipeSharp.Attributes;
 using System.Linq;
+using SnipeSharp.Common;
 using SnipeSharp.Exceptions;
 
 namespace SnipeSharp.Endpoints.Models
@@ -13,7 +13,7 @@ namespace SnipeSharp.Endpoints.Models
         private string _type;
 
         [JsonProperty("type")]
-        [RequiredRequestHeader("category_type")]
+        [RequestHeader("category_type", true)]
         public string Type
         { // TODO: We should probably remove this and rely on the API to say it's invalid
             get { return _type; }
@@ -33,15 +33,15 @@ namespace SnipeSharp.Endpoints.Models
         }
 
         [JsonProperty("eula")]
-        [OptionalRequestHeader("eula")]
+        [RequestHeader("eula")]
         public bool eula { get; set; }
 
         [JsonProperty("checkin_email")]
-        [OptionalRequestHeader("checkin_email")]
+        [RequestHeader("checkin_email")]
         public bool CheckinEmail { get; set; }
 
         [JsonProperty("require_acceptance")]
-        [OptionalRequestHeader("required_acceptance")]
+        [RequestHeader("required_acceptance")]
         public bool RequireAcceptance { get; set; }
 
         [JsonProperty("assets_count")]
