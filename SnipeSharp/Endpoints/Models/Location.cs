@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
-using SnipeSharp.Attributes;
-using SnipeSharp.Common;
 using System.Collections.Generic;
+using SnipeSharp.Common;
 
 namespace SnipeSharp.Endpoints.Models
 {
@@ -11,22 +10,22 @@ namespace SnipeSharp.Endpoints.Models
         public string Image { get; set; }
 
         [JsonProperty("address")]
-        [OptionalRequestHeader("address")]
+        [RequestHeader("address")]
         public string Address { get; set; }
 
         [JsonProperty("city")]
         public string City { get; set; }
 
         [JsonProperty("state")]
-        [OptionalRequestHeader("state")]
+        [RequestHeader("state")]
         public string State { get; set; }
 
         [JsonProperty("country")]
-        [OptionalRequestHeader("country")]
+        [RequestHeader("country")]
         public string Country { get; set; }
 
         [JsonProperty("zip")]
-        [OptionalRequestHeader("zip")]
+        [RequestHeader("zip")]
         public string Zip { get; set; }
 
         [JsonProperty("assets_count")]
@@ -36,7 +35,7 @@ namespace SnipeSharp.Endpoints.Models
         public long? UsersCount { get; set; }
 
         [JsonProperty("parent")]
-        [OptionalRequestHeader("parent_id")]
+        [RequestHeader("parent_id")]
         public Location Parent { get; set; }
 
         [JsonProperty("manager")]

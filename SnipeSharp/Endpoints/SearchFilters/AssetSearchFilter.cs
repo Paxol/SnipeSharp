@@ -1,32 +1,31 @@
-﻿using SnipeSharp.Attributes;
+﻿using SnipeSharp.Common;
 using SnipeSharp.Endpoints.Models;
 
 namespace SnipeSharp.Endpoints.SearchFilters
 {
     public class AssetSearchFilter : SearchFilter
     {
-        [FilterParamName("order_number")]
+        [FilterParameterName("order_number")]
         public string OrderNumber { get; set; }
 
-        [FilterParamName("model_id")]
+        [FilterParameterName("model_id")]
         public int? ModelId { get; set; }
 
-        [FilterParamName("category_id")]
+        [FilterParameterName("category_id")]
         public int? CategoryId { get; set; }
 
-        [FilterParamName("manufacturer_id")]
+        [FilterParameterName("manufacturer_id")]
         public Manufacturer Manufacturer { get; set; }
 
-        [FilterParamName("company_id")]
+        [FilterParameterName("company_id")]
         public int? CompanyId { get; set; }
 
-        [FilterParamName("location_id")]
+        [FilterParameterName("location_id")]
         public Location Location { get; set; }
 
         public string Status { get; set; }
 
-        [FilterParamName("status_id")]
+        [FilterParameterName("status_id")]
         public int? StatusId { get; set; }
-
     }
 }

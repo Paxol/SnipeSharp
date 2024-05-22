@@ -1,21 +1,20 @@
-﻿using SnipeSharp.Common;
-using Newtonsoft.Json;
-using SnipeSharp.Attributes;
+﻿using Newtonsoft.Json;
+using SnipeSharp.Common;
 
 namespace SnipeSharp.Endpoints.Models
 {
     public class Department : CommonEndpointModel
     {
         [JsonProperty("company_id")]
-        [OptionalRequestHeader("company_id")]
+        [RequestHeader("company_id")]
         public Company Company { get; set; }
 
         [JsonProperty("manager")]
-        [OptionalRequestHeader("manager_id")]
+        [RequestHeader("manager_id")]
         public User Manager { get; set; }
 
         [JsonProperty("location")]
-        [OptionalRequestHeader("location_id")]
+        [RequestHeader("location_id")]
         public Location Location { get; set; }
     }
 }

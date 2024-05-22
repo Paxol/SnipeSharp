@@ -2,38 +2,38 @@
 using SnipeSharp.Endpoints.SearchFilters;
 using SnipeSharp.Exceptions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Reflection;
 using System.Threading.Tasks;
+using SnipeSharp.Endpoints;
 
 namespace SnipeSharp.Common
 {
-
     public class RequestManager : IRequestManager
     {
+        public ApiSettings ApiSettings { get; }
+        
+        public IQueryParameterBuilder QueryParameterBuilder { get; set; } = new QueryParameterBuilder();
 
-        public ApiSettings _apiSettings { get; set; }
-        static HttpClient Client;
+        private HttpClient Client { get; }
 
         public RequestManager(ApiSettings apiSettings)
         {
-            _apiSettings = apiSettings;
-            Client = new HttpClient();
-            Client.BaseAddress = _apiSettings.BaseUrl;
-            Client.DefaultRequestHeaders.Accept.Clear();
-            Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            this.ApiSettings = apiSettings;
+            
+            var client = new HttpClient {BaseAddress = ApiSettings.BaseUrl};
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            this.Client = client;
         }        
 
         public string Delete(string path)
         {
-
             CheckApiTokenAndUrl();
 
-            string result = "";
-            HttpResponseMessage response = Client.DeleteAsync(path).Result;
+            var result = string.Empty;
+            var response = Client.DeleteAsync(path).Result;
             if (response.IsSuccessStatusCode)
             {
                 result = response.Content.ReadAsStringAsync().Result;
@@ -44,11 +44,10 @@ namespace SnipeSharp.Common
 
         public string Get(string path)
         {
-
             CheckApiTokenAndUrl();
 
-            string result = "";
-            HttpResponseMessage response = Task.Run(() => Client.GetAsync(path)).Result;
+            var result = string.Empty;
+            var response = Task.Run(() => Client.GetAsync(path)).Result;
             if (response.IsSuccessStatusCode)
             {
                 result = response.Content.ReadAsStringAsync().Result;                
@@ -59,13 +58,11 @@ namespace SnipeSharp.Common
 
         public string Get(string path, ISearchFilter filter)
         {
-
             CheckApiTokenAndUrl();
-            path = path + "?" + filter.GetQueryString();
-            string result = "";
+            path = path + "?" + this.QueryParameterBuilder.GetParameters(filter);
+            var result = string.Empty;
 
-            //HttpResponseMessage response = Client.GetAsync(path).Result;
-            HttpResponseMessage response = Task.Run(() => Client.GetAsync(path)).Result;
+            var response = Task.Run(() => Client.GetAsync(path)).Result;
             if (response.IsSuccessStatusCode)
             {
                 result = response.Content.ReadAsStringAsync().Result;
@@ -79,8 +76,7 @@ namespace SnipeSharp.Common
             Console.WriteLine("Posting With Async");
             CheckApiTokenAndUrl();
 
-            //HttpResponseMessage response = Client.PostAsync(path, BuildQueryString(item)).Result;
-            HttpResponseMessage response = Task.Run(() => Client.PostAsync(path, BuildQueryString(item))).Result;
+            var response = Task.Run(() => Client.PostAsync(path, BuildQueryString(item))).Result;
             string result = null;
             if (response.IsSuccessStatusCode)
             {
@@ -92,10 +88,9 @@ namespace SnipeSharp.Common
 
         public string Put(string path, ICommonEndpointModel item)
         {
-
             CheckApiTokenAndUrl();
 
-            HttpResponseMessage response = Client.PutAsync(path, BuildQueryString(item)).Result;
+            var response = Client.PutAsync(path, BuildQueryString(item)).Result;
             string result = null;
             if (response.IsSuccessStatusCode)
             {
@@ -104,11 +99,10 @@ namespace SnipeSharp.Common
 
             return result;
         }
-
 
         public string Checkin(string path)
         {
-            HttpResponseMessage response = Client.PostAsync(path, null).Result;
+            var response = Client.PostAsync(path, null).Result;
             string result = null;
             if (response.IsSuccessStatusCode)
             {
@@ -118,81 +112,41 @@ namespace SnipeSharp.Common
             return result;
         }
 
-        public FormUrlEncodedContent BuildQueryString(ICommonEndpointModel item)
+        private FormUrlEncodedContent BuildQueryString(ICommonEndpointModel item)
         {
-
-            Dictionary<string, string> values = new Dictionary<string, string>();
+            var values = this.QueryParameterBuilder.GetParameters(item);
 
             // If it's an asset check if there's a checkout request.  Also process custom fields
 
-            Asset asset = item as Asset;
+            var asset = item as Asset;
             if (asset != null)
             {
                 // If an asset as this set we know it needs to be check out. 
-                if (asset.CheckoutRequest != null)
+                var assetCheckoutRequest = asset.CheckoutRequest;
+                
+                if (assetCheckoutRequest != null)
                 {
-                    foreach (PropertyInfo prop in asset.CheckoutRequest.GetType().GetProperties())
+                    var additionalParameters = this.QueryParameterBuilder.GetParameters(asset.CheckoutRequest);
+
+                    foreach (var kvp in additionalParameters)
                     {
-                        var propValue = (prop.GetValue(asset.CheckoutRequest) != null) ? prop.GetValue(asset.CheckoutRequest).ToString() : null;
-
-                        if (propValue == null) continue;
-
-                        var result = prop.GetCustomAttributesData()
-                                        .Where(p => p.Constructor.DeclaringType.Name == "OptionalRequestHeader")
-                                            .FirstOrDefault();
-
-                        if (result == null) continue;
-
-                        string keyname = result.ConstructorArguments.First().ToString().Replace("\"", "").ToLower();
-
-                        values.Add(keyname, propValue);
+                        values.Add(kvp.Key, kvp.Value);
                     }
-
+                    
                     return new FormUrlEncodedContent(values);
                 }
 
                 // Assets are the only ones that have custom fields
-                if (asset != null && asset.CustomFields != null)
+                if (asset.CustomFields != null)
                 {
-                    foreach (KeyValuePair<string, string> custField in asset.CustomFields)
+                    foreach (var fieldValuePair in asset.CustomFields)
                     {
-                        values.Add(custField.Key, custField.Value);
+                        values.Add(fieldValuePair.Key, fieldValuePair.Value);
                     }
                 }
             }
-            
 
-            foreach (PropertyInfo prop in item.GetType().GetProperties())
-            {
-                foreach (CustomAttributeData attData in prop.GetCustomAttributesData())
-                {
-                    
-                    string typeName = attData.Constructor.DeclaringType.Name;
-
-                    if (typeName == "RequiredRequestHeader" || typeName == "OptionalRequestHeader")
-                    {
-                        var propValue = prop.GetValue(item);
-
-                        // Abort in missing required headers
-                        if (propValue == null && typeName == "RequiredRequestHeader")
-                        {
-                            throw new RequiredValueIsNullException(string.Format("{0} Cannot Be Null", prop.Name));
-                        }
-
-                        if (propValue != null)
-                        {
-                            
-                            string attName = attData.ConstructorArguments.First().ToString().Replace("\"", "");
-
-                            values.Add(attName, propValue.ToString());
-                        }                        
-                    } 
-                }
-            }
-
-            
-
-            FormUrlEncodedContent content = new FormUrlEncodedContent(values);
+            var content = new FormUrlEncodedContent(values);
 
             return content;
         }
@@ -200,27 +154,25 @@ namespace SnipeSharp.Common
         // Since the Token and URL can be set anytime after the SnipApi object is created we need to check for these before sending a request
         public void CheckApiTokenAndUrl()
         {
-            if (_apiSettings.BaseUrl == null)
+            if (ApiSettings.BaseUrl == null)
             {
                 throw new NullApiBaseUrlException("No API Base Url Set.");
             }
 
-            if (_apiSettings.ApiToken == null)
+            if (ApiSettings.ApiToken == null)
             {
                 throw new NullApiTokenException("No API Token Set");
             }
 
             if (Client.BaseAddress == null)
             {
-                Client.BaseAddress = _apiSettings.BaseUrl;
+                Client.BaseAddress = ApiSettings.BaseUrl;
             }
 
             if (Client.DefaultRequestHeaders.Authorization == null)
             {
-                Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _apiSettings.ApiToken);
+                Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", ApiSettings.ApiToken);
             }
         }
-
-
     }
 }

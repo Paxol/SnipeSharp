@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
-using SnipeSharp.Attributes;
-using SnipeSharp.Common;
 using System.Linq;
+using SnipeSharp.Common;
 using SnipeSharp.Exceptions;
 
 namespace SnipeSharp.Endpoints.Models
@@ -11,7 +10,7 @@ namespace SnipeSharp.Endpoints.Models
         private string _type;
 
         [JsonProperty("type")]
-        [RequiredRequestHeader("type")]
+        [RequestHeader("type", true)]
         public string Type
         {
             get
@@ -28,33 +27,34 @@ namespace SnipeSharp.Endpoints.Models
                     _type = value;
                 } else
                 {
-                    throw new InvalidStatusLabelTypeException(string.Format("{0} Is an invalid status lable.  Use {1}", value, string.Join(", ", validTypes)));
+                    throw new InvalidStatusLabelTypeException(
+                        $"{value} Is an invalid status lable.  Use {string.Join(", ", validTypes)}");
                 }
             }
         }
 
         [JsonProperty("color")]
-        [OptionalRequestHeader("color")]
+        [RequestHeader("color")]
         public string Color { get; set; }
 
         [JsonProperty("show_in_nav")]
-        [OptionalRequestHeader("show_in_nav")]
+        [RequestHeader("show_in_nav")]
         public bool ShowInNav { get; set; }
 
         [JsonProperty("assets_count")]
         public long? AssetsCount { get; set; }
 
         [JsonProperty("notes")]
-        [OptionalRequestHeader("notes")]
+        [RequestHeader("notes")]
         public string Notes { get; set; }
 
-        [RequiredRequestHeader("deployable")]
+        [RequestHeader("deployable", true)]
         public bool Deployable { get; set; }
 
-        [RequiredRequestHeader("pending")]
+        [RequestHeader("pending", true)]
         public bool Pending { get; set; }
 
-        [RequiredRequestHeader("archived")]
+        [RequestHeader("archived", true)]
         public bool Archived { get; set; }
     }
 }

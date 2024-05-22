@@ -7,10 +7,11 @@ namespace SnipeSharp.Endpoints.Models
     public interface ICommonEndpointModel
     {
         long Id { get; set; }
+        
         string Name { get; set; }
+        
         ResponseDate CreatedAt { get; set; }
+        
         ResponseDate UpdatedAt { get; set; }
-        Dictionary<string, string> BuildQueryString(); // 
-
     }
 }

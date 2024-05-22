@@ -1,54 +1,52 @@
-﻿using SnipeSharp.Common;
-using Newtonsoft.Json;
-using SnipeSharp.Attributes;
+﻿using Newtonsoft.Json;
+using SnipeSharp.Common;
 
 namespace SnipeSharp.Endpoints.Models
 {
     public class Supplier : CommonEndpointModel
     {
         [JsonProperty("name")]
-        [OptionalRequestHeader("name")]
+        [RequestHeader("name")]
         public new string Name { get; set; }
 
-        [OptionalRequestHeader("address")]
+        [RequestHeader("address")]
         [JsonProperty("address")]
         public string Address { get; set; }
 
-        [OptionalRequestHeader("city")]
+        [RequestHeader("city")]
         [JsonProperty("city")]
         public string City { get; set; }
 
-        [OptionalRequestHeader("state")]
+        [RequestHeader("state")]
         [JsonProperty("state")]
         public string State { get; set; }
 
-        [OptionalRequestHeader("country")]
+        [RequestHeader("country")]
         [JsonProperty("country")]
         public string Country { get; set; }
 
-        [OptionalRequestHeader("zip")]
+        [RequestHeader("zip")]
         [JsonProperty("zip")]
         public string Zip { get; set; }
 
-        [OptionalRequestHeader("fax")]
+        [RequestHeader("fax")]
         [JsonProperty("fax")]
         public string Fax { get; set; }
 
-        [OptionalRequestHeader("phone")]
+        [RequestHeader("phone")]
         [JsonProperty("phone")]
         public string Phone { get; set; }
 
-        [OptionalRequestHeader("email")]
+        [RequestHeader("email")]
         [JsonProperty("email")]
         public string Email { get; set; }
 
-        [OptionalRequestHeader("contact")]
+        [RequestHeader("contact")]
         [JsonProperty("contact")]
         public string Contact { get; set; }
 
-        [OptionalRequestHeader("notes")]
+        [RequestHeader("notes")]
         [JsonProperty("notes")]
         public string Notes { get; set; }
-
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SnipeSharp.Common;
 using System.Collections.Generic;
-using SnipeSharp.Attributes;
 
 namespace SnipeSharp.Endpoints.Models
 {
@@ -9,18 +8,18 @@ namespace SnipeSharp.Endpoints.Models
     {
 
         [JsonProperty("name")]
-        [OptionalRequestHeader("name")]
+        [RequestHeader("name")]
         public new string Name { get; set; }
 
         [JsonProperty("accessories_count")]
         public long? AccessoriesCount { get; set; }
 
         [JsonProperty("activated")]
-        [OptionalRequestHeader("activated")]
+        [RequestHeader("activated")]
         public bool Activated { get; set; }
 
         [JsonProperty("address")]
-        [OptionalRequestHeader("address")]
+        [RequestHeader("address")]
         public string Address { get; set; }
 
         [JsonProperty("assets_count")]
@@ -30,85 +29,85 @@ namespace SnipeSharp.Endpoints.Models
         public string Avatar { get; set; }
 
         [JsonProperty("city")]
-        [OptionalRequestHeader("city")]
+        [RequestHeader("city")]
         public string City { get; set; }
 
         [JsonProperty("company")]
-        [OptionalRequestHeader("company_id")]
+        [RequestHeader("company_id")]
         public Company Company { get; set; }
 
         [JsonProperty("consumables_count")]
         public long ConsumablesCount { get; set; }
 
         [JsonProperty("country")]
-        [OptionalRequestHeader("country")]
+        [RequestHeader("country")]
         public string Country { get; set; }
 
         [JsonProperty("email")]
-        [OptionalRequestHeader("email")]
+        [RequestHeader("email")]
         public string Email { get; set; }
 
         [JsonProperty("employee_num")]
-        [OptionalRequestHeader("employee_num")]
+        [RequestHeader("employee_num")]
         public string EmployeeNum { get; set; }
 
         [JsonProperty("firstname")]
-        [RequiredRequestHeader("first_name")]
+        [RequestHeader("first_name", true)]
         public string Firstname { get; set; }
 
         [JsonProperty("jobtitle")]
-        [OptionalRequestHeader("jobtitle")]
+        [RequestHeader("jobtitle")]
         public string Jobtitle { get; set; }
 
         [JsonProperty("last_login")]
         public ResponseDate LastLogin { get; set; }
 
         [JsonProperty("lastname")]
-        [OptionalRequestHeader("last_name")]
+        [RequestHeader("last_name")]
         public string Lastname { get; set; }
 
         [JsonProperty("licenses_count")]
         public long? LicensesCount { get; set; }
 
         [JsonProperty("location")]
-        [OptionalRequestHeader("location_id")]
+        [RequestHeader("location_id")]
         public Location Location { get; set; }
 
         [JsonProperty("manager")]
-        [OptionalRequestHeader("manager_id")]
+        [RequestHeader("manager_id")]
         public User Manager { get; set; }
 
         [JsonProperty("notes")]
-        [OptionalRequestHeader("notes")]
+        [RequestHeader("notes")]
         public string Notes { get; set; }
 
         [JsonProperty("permissions")]
         public Dictionary<string, string> Permissions { get; set; }
 
         [JsonProperty("phone")]
-        [OptionalRequestHeader("phone")]
+        [RequestHeader("phone")]
         public string Phone { get; set; }
 
         [JsonProperty("state")]
-        [OptionalRequestHeader("state")]
+        [RequestHeader("state")]
         public string State { get; set; }
 
         [JsonProperty("two_factor_activated")]
         public bool TwoFactorActivated { get; set; }
 
         [JsonProperty("username")]
-        [RequiredRequestHeader("username")]
+        [RequestHeader("username", true)]
         public string Username { get; set; }
 
         [JsonProperty("zip")]
-        [OptionalRequestHeader("zip")]
+        [RequestHeader("zip")]
         public object Zip { get; set; }
 
-        [RequiredRequestHeader("password")]
+        [RequestHeader("password", true)]
         public string Password { get; set; }
 
         [JsonProperty("department")]
-        [OptionalRequestHeader("department_id")]
+        [RequestHeader("department_id")]
         public Department Department { get; set; }
     }
 }

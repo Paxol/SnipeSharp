@@ -1,34 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using SnipeSharp.Endpoints.Models;
+﻿using SnipeSharp.Endpoints.Models;
 using SnipeSharp.Endpoints.SearchFilters;
 using RestSharp;
 using RestSharp.Authenticators;
+using SnipeSharp.Endpoints;
 using SnipeSharp.Exceptions;
-using Newtonsoft.Json;
 
 namespace SnipeSharp.Common
 {
-    class RequestManagerRestSharp : IRequestManager
+    public class RequestManagerRestSharp : IRequestManager
     {
-
-        public ApiSettings _apiSettings { get; set; }
-        static RestClient Client;
+        public ApiSettings ApiSettings { get; }
+        
+        public IQueryParameterBuilder QueryParameterBuilder { get; set; } = new QueryParameterBuilder();
+        
+        private readonly RestClient _client;
 
         public RequestManagerRestSharp(ApiSettings apiSettings)
         {
-            _apiSettings = apiSettings;
-            Client = new RestClient();
-            Client.AddDefaultHeader("Accept", "application/json");
-
+            this.ApiSettings = apiSettings;
+            this._client = new RestClient();
+            this._client.AddDefaultHeader("Accept", "application/json");
         }
 
         public string Delete(string path)
         {
             CheckApiTokenAndUrl();
-            RestRequest req = new RestRequest(Method.DELETE); 
-            req.Resource = path;
-            IRestResponse res = Client.Execute(req);
+            var req = new RestRequest(Method.DELETE) {Resource = path};
+            var res = _client.Execute(req);
 
             return res.Content;
         }
@@ -36,10 +34,13 @@ namespace SnipeSharp.Common
         public string Get(string path)
         {
             CheckApiTokenAndUrl();
-            RestRequest req = new RestRequest();
-            req.Resource = path; // Test
-            req.Timeout = 200000;
-            IRestResponse res = Client.Execute(req);
+            var req = new RestRequest
+            {
+                Resource = path,
+                Timeout = 200000
+            };
+            // Test
+            var res = _client.Execute(req);
 
             return res.Content;
         }
@@ -47,15 +48,20 @@ namespace SnipeSharp.Common
         public string Get(string path, ISearchFilter filter)
         {
             CheckApiTokenAndUrl();
-            RestRequest req = new RestRequest();
-            req.Resource = path;
-            req.Timeout = 200000; // TODO: We should probably breakup large requests
-            foreach (KeyValuePair<string, string> kvp in filter.GetQueryString())
+            var req = new RestRequest
+            {
+                Resource = path,
+                Timeout = 200000
+            };
+
+            var filters = this.QueryParameterBuilder.GetParameters(filter);
+            // TODO: We should probably breakup large requests
+            foreach (var kvp in filters)
             {
                 req.AddParameter(kvp.Key, kvp.Value);
             }
 
-            IRestResponse res = Client.Execute(req);
+            var res = _client.Execute(req);
 
             return res.Content;
         }
@@ -63,17 +69,17 @@ namespace SnipeSharp.Common
         public string Post(string path, ICommonEndpointModel item)
         {
             CheckApiTokenAndUrl();
-            RestRequest req = new RestRequest(Method.POST);
-            req.Resource = path;
+            var req = new RestRequest(Method.POST) {Resource = path};
 
-            Dictionary<string, string> parameters = item.BuildQueryString();
+            var parameters = this.QueryParameterBuilder.GetParameters(item);
 
-            foreach (KeyValuePair<string, string> kvp in parameters)
+            foreach (var kvp in parameters)
             {
                 req.AddParameter(kvp.Key, kvp.Value);
             }
+            
             // TODO: Add error checking
-            IRestResponse res = Client.Execute(req);
+            var res = _client.Execute(req);
 
             return res.Content;
         }
@@ -82,42 +88,42 @@ namespace SnipeSharp.Common
         {
             // TODO: Make one method for post and put.
             CheckApiTokenAndUrl();
-            RestRequest req = new RestRequest(Method.PUT);
-            req.Resource = path;
+            var req = new RestRequest(Method.PUT) {Resource = path};
 
-            Dictionary<string, string> parameters = item.BuildQueryString();
+            var parameters = this.QueryParameterBuilder.GetParameters(item);
 
-            foreach (KeyValuePair<string, string> kvp in parameters)
+            foreach (var kvp in parameters)
             {
                 req.AddParameter(kvp.Key, kvp.Value);
             }
+            
             // TODO: Add  error checking
-            IRestResponse res = Client.Execute(req);
+            var res = _client.Execute(req);
 
             return res.Content;
         }
 
         // Since the Token and URL can be set anytime after the SnipApi object is created we need to check for these before sending a request
-        public void CheckApiTokenAndUrl()
+        private void CheckApiTokenAndUrl()
         {
-            if (_apiSettings.BaseUrl == null)
+            if (ApiSettings.BaseUrl == null)
             {
                 throw new NullApiBaseUrlException("No API Base Url Set.");
             }
 
-            if (_apiSettings.ApiToken == null)
+            if (ApiSettings.ApiToken == null)
             {
                 throw new NullApiTokenException("No API Token Set");
             }
 
-            if (Client.BaseUrl == null)
+            if (_client.BaseUrl == null)
             {
-                Client.BaseUrl = _apiSettings.BaseUrl;
+                _client.BaseUrl = ApiSettings.BaseUrl;
             }
 
-            if (Client.Authenticator == null)
+            if (_client.Authenticator == null)
             {
-                Client.Authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator(_apiSettings.ApiToken, "Bearer");
+                _client.Authenticator = new OAuth2AuthorizationRequestHeaderAuthenticator(ApiSettings.ApiToken, "Bearer");
             }
         }
     }

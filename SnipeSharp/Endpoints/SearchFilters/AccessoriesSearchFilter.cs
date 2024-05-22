@@ -1,10 +1,10 @@
-﻿using SnipeSharp.Attributes;
+﻿using SnipeSharp.Common;
 
 namespace SnipeSharp.Endpoints.SearchFilters
 {
     class AccessoriesSearchFilter : SearchFilter
     {
-        [FilterParamName("order_number")]
+        [FilterParameterName("order_number")]
         public string OrderNumber { get; set; }
 
         public bool Expand { get; set; }
