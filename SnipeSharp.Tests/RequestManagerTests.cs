@@ -41,7 +41,7 @@ namespace SnipeSharp.Tests
 
             // Get the Static property value
             Type type = typeof(RequestManager);
-            FieldInfo prop = type.GetField("Client", BindingFlags.NonPublic | BindingFlags.Static);
+            PropertyInfo prop = type.GetProperty("Client", BindingFlags.Instance | BindingFlags.NonPublic);
             HttpClient value = prop.GetValue(reqManager) as HttpClient;
 
             Assert.AreEqual(url, value.BaseAddress);
@@ -51,21 +51,22 @@ namespace SnipeSharp.Tests
         public void CheckApiTokenAndUrl_SetAuthorizationHeader_SetCorrectly()
         {
             var url = new Uri("http://google.com");
+            var apiToken = "xxxxxx";
             var reqManager =
                 new RequestManager(new ApiSettings
                 {
                     BaseUrl = url,
-                    ApiToken = "xxxxxx"
+                    ApiToken = apiToken
                 });
             reqManager.CheckApiTokenAndUrl();
 
             // Get the Static property value
             Type type = typeof(RequestManager);
-            FieldInfo prop = type.GetField("Client", BindingFlags.NonPublic | BindingFlags.Static);
+            PropertyInfo prop = type.GetProperty("Client", BindingFlags.Instance | BindingFlags.NonPublic);
             HttpClient value = prop.GetValue(reqManager) as HttpClient;
 
             Assert.IsTrue(value.DefaultRequestHeaders.Authorization.Scheme == "Bearer" &&
-                value.DefaultRequestHeaders.Authorization.Parameter == "xxxxx");
+                value.DefaultRequestHeaders.Authorization.Parameter == apiToken);
 
         }
     }
