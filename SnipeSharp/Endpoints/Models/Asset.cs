@@ -78,9 +78,11 @@ namespace SnipeSharp.Endpoints.Models
         }
 
         [JsonProperty("warranty_expires")]
+        [JsonConverter(typeof(ResponseDateTimeConverter))]
         public ResponseDate WarrantyExpires { get; set; }
 
         [JsonProperty("deleted_at")]
+        [JsonConverter(typeof(ResponseDateTimeConverter))]
         public ResponseDate DeletedAt { get; set; }
 
         [JsonProperty("purchase_date")]
@@ -89,10 +91,12 @@ namespace SnipeSharp.Endpoints.Models
         public ResponseDate PurchaseDate { get; set; }
 
         [JsonProperty("expected_checkin")]
+        [JsonConverter(typeof(ResponseDateTimeConverter))]
         public ResponseDate ExpectedCheckin { get; set; }
 
         [JsonProperty("last_checkout")]
         [RequestHeader("last_checkout")]
+        [JsonConverter(typeof(ResponseDateTimeConverter))]
         public ResponseDate LastCheckout { get; set; }
 
         [JsonProperty("purchase_cost")]
