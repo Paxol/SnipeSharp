@@ -35,6 +35,14 @@ namespace SnipeSharp.JsonConverters
         {
             JToken token = JToken.Load(reader);
 
+            if (token.Type == JTokenType.Date)
+            {
+                return new ResponseDate()
+                {
+                    DateTime = token.ToObject<DateTime>().ToString("O")
+                };
+            }
+            
             if (token.Type == JTokenType.String)
             {
                 return new ResponseDate()
